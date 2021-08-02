@@ -1,0 +1,135 @@
+==14404== Memcheck, a memory error detector
+==14404== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==14404== Using Valgrind-3.15.0-608cb11914-20190413 and LibVEX; rerun with -h for copyright info
+==14404== Command: ./philo 4 520 520 520
+==14404== Parent PID: 8911
+==14404== 
+--14404-- 
+--14404-- Valgrind options:
+--14404--    --leak-check=full
+--14404--    --show-leak-kinds=all
+--14404--    --track-origins=yes
+--14404--    --verbose
+--14404--    --log-file=valgrind-out.txt
+--14404-- Contents of /proc/version:
+--14404--   Linux version 5.8.0-63-generic (buildd@lgw01-amd64-035) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #71~20.04.1-Ubuntu SMP Thu Jul 15 17:46:08 UTC 2021
+--14404-- 
+--14404-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand
+--14404-- Page sizes: currently 4096, max supported 4096
+--14404-- Valgrind library directory: /usr/lib/x86_64-linux-gnu/valgrind
+--14404-- Reading syms from /home/danali/Documents/Codam/philosophers/philo
+--14404-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-2.31.so
+--14404--   Considering /usr/lib/x86_64-linux-gnu/ld-2.31.so ..
+--14404--   .. CRC mismatch (computed 975d0390 wanted 30bd717f)
+--14404--   Considering /lib/x86_64-linux-gnu/ld-2.31.so ..
+--14404--   .. CRC mismatch (computed 975d0390 wanted 30bd717f)
+--14404--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.31.so ..
+--14404--   .. CRC is valid
+--14404-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux
+--14404--    object doesn't have a symbol table
+--14404--    object doesn't have a dynamic symbol table
+--14404-- Scheduler: using generic scheduler lock implementation.
+--14404-- Reading suppressions file: /usr/lib/x86_64-linux-gnu/valgrind/default.supp
+==14404== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-14404-by-danali-on-???
+==14404== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-14404-by-danali-on-???
+==14404== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-14404-by-danali-on-???
+==14404== 
+==14404== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==14404== don't want to do, unless you know exactly what you're doing,
+==14404== or are doing some strange experiment):
+==14404==   /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=14404 ...command...
+==14404== 
+==14404== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==14404==   /path/to/gdb ./philo
+==14404== and then give GDB the following command
+==14404==   target remote | /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=14404
+==14404== --pid is optional if only one valgrind process is running
+==14404== 
+--14404-- REDIR: 0x4022e10 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c9ce2 (???)
+--14404-- REDIR: 0x4022be0 (ld-linux-x86-64.so.2:index) redirected to 0x580c9cfc (???)
+--14404-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_core-amd64-linux.so
+--14404--    object doesn't have a symbol table
+--14404-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so
+--14404--    object doesn't have a symbol table
+==14404== WARNING: new redirection conflicts with existing -- ignoring it
+--14404--     old: 0x04022e10 (strlen              ) R-> (0000.0) 0x580c9ce2 ???
+--14404--     new: 0x04022e10 (strlen              ) R-> (2007.0) 0x0483f060 strlen
+--14404-- REDIR: 0x401f5f0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x483ffd0 (strcmp)
+--14404-- REDIR: 0x4023370 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4843a20 (mempcpy)
+--14404-- Reading syms from /usr/lib/x86_64-linux-gnu/libpthread-2.31.so
+--14404--   Considering /usr/lib/debug/.build-id/e5/4761f7b554d0fcc1562959665d93dffbebdaf0.debug ..
+--14404--   .. build-id is valid
+--14404-- Reading syms from /usr/lib/x86_64-linux-gnu/libc-2.31.so
+--14404--   Considering /usr/lib/x86_64-linux-gnu/libc-2.31.so ..
+--14404--   .. CRC mismatch (computed 86b78530 wanted e380f01c)
+--14404--   Considering /lib/x86_64-linux-gnu/libc-2.31.so ..
+--14404--   .. CRC mismatch (computed 86b78530 wanted e380f01c)
+--14404--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.31.so ..
+--14404--   .. CRC is valid
+--14404-- REDIR: 0x4922600 (libc.so.6:memmove) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4921900 (libc.so.6:strncpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4922930 (libc.so.6:strcasecmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4921220 (libc.so.6:strcat) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4921960 (libc.so.6:rindex) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4923dd0 (libc.so.6:rawmemchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x493ee60 (libc.so.6:wmemchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x493e9a0 (libc.so.6:wcscmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4922760 (libc.so.6:mempcpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4922590 (libc.so.6:bcmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4921890 (libc.so.6:strncmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x49212d0 (libc.so.6:strcmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x49226c0 (libc.so.6:memset) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x493e960 (libc.so.6:wcschr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x49217f0 (libc.so.6:strnlen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x49213b0 (libc.so.6:strcspn) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4922980 (libc.so.6:strncasecmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4921350 (libc.so.6:strcpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4922ad0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x49400d0 (libc.so.6:wcsnlen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x493e9e0 (libc.so.6:wcscpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x49219a0 (libc.so.6:strpbrk) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4921280 (libc.so.6:index) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x49217b0 (libc.so.6:strlen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x492ad20 (libc.so.6:memrchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x49229d0 (libc.so.6:strcasecmp_l) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4922550 (libc.so.6:memchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x493eab0 (libc.so.6:wcslen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4921c60 (libc.so.6:strspn) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x49228d0 (libc.so.6:stpncpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4922870 (libc.so.6:stpcpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4923e10 (libc.so.6:strchrnul) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4922a20 (libc.so.6:strncasecmp_l) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--14404-- REDIR: 0x4a0a490 (libc.so.6:__strrchr_avx2) redirected to 0x483ea10 (rindex)
+--14404-- REDIR: 0x491c260 (libc.so.6:malloc) redirected to 0x483b780 (malloc)
+--14404-- REDIR: 0x491dc90 (libc.so.6:calloc) redirected to 0x483dce0 (calloc)
+--14404-- REDIR: 0x4a0a2a0 (libc.so.6:__strchrnul_avx2) redirected to 0x4843540 (strchrnul)
+--14404-- REDIR: 0x4a0d650 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4843660 (mempcpy)
+--14404-- REDIR: 0x491c850 (libc.so.6:free) redirected to 0x483c9d0 (free)
+==14404== Thread 2:
+==14404== Invalid free() / delete / delete[] / realloc()
+==14404==    at 0x483CA3F: free (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14404==    by 0x10952C: routine (threads.c:27)
+==14404==    by 0x4865608: start_thread (pthread_create.c:477)
+==14404==    by 0x49A1292: clone (clone.S:95)
+==14404==  Address 0x1ffefffa30 is on thread 1's stack
+==14404==  in frame #4, created by main (main.c:4)
+==14404== 
+==14404== 
+==14404== HEAP SUMMARY:
+==14404==     in use at exit: 0 bytes in 0 blocks
+==14404==   total heap usage: 6 allocs, 10 frees, 2,144 bytes allocated
+==14404== 
+==14404== All heap blocks were freed -- no leaks are possible
+==14404== 
+==14404== ERROR SUMMARY: 4 errors from 1 contexts (suppressed: 0 from 0)
+==14404== 
+==14404== 4 errors in context 1 of 1:
+==14404== Invalid free() / delete / delete[] / realloc()
+==14404==    at 0x483CA3F: free (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14404==    by 0x10952C: routine (threads.c:27)
+==14404==    by 0x4865608: start_thread (pthread_create.c:477)
+==14404==    by 0x49A1292: clone (clone.S:95)
+==14404==  Address 0x1ffefffa30 is on thread 1's stack
+==14404==  in frame #4, created by main (main.c:4)
+==14404== 
+==14404== ERROR SUMMARY: 4 errors from 1 contexts (suppressed: 0 from 0)

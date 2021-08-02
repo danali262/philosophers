@@ -21,3 +21,17 @@ int	ft_atoi(const char *nptr)
 	}
 	return (res * sign);
 }
+
+int	is_numeric(char *c)
+{
+	int i;
+
+	i = 0;
+	while (c[i] != '\0')
+	{
+		if (c[i] < 48 && c[i] > 57)
+			return (0);
+		i++;
+	}
+	return (1);
+}
