@@ -2,14 +2,16 @@
 
 int	main(int argc, char **argv)
 {
-	t_input		input;
-	t_philo	data;
+	t_philo	*philo;
+	t_input	input;
+	// int		i;
 
 	if (argc < 5)
 	{
 		printf("Please provide sufficient arguments\n");
-		return (1);
+		return (-1);
 	}
+	initialize_input(&input);
 	input.n = ft_atoi(argv[1]);
 	// printf("number of philosophers are %d\n", input.n);
 	input.time_to_die = ft_atoi(argv[2]);
@@ -24,10 +26,17 @@ int	main(int argc, char **argv)
 		// printf("number of times a philo has to eat is %d\n", input.n_times_to_eat);
 	}
 	if (validate_input(&input, argc, argv) == -1)
+		return (-1);
+	philo = malloc(sizeof(t_philo) * input.n);
+	if (!philo)
+		return (-1);
+	if (initialize_philosophers(&input, philo) == -1)
+		return (-1);
+	if (initialize_mutex(philo) == -1)
+		return (-1);
+	if (create_threads(&input, philo) == -1)
 		return (1);
-	pthread_mutex_init(&data.fork, NULL);
-	if (create_threads(&input, &data) == -1)
-		return (1);
-	pthread_mutex_destroy(&data.fork);
+	destroy_mutex(philo);
+	free(philo);
 	return (0);
 }

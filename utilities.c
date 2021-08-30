@@ -1,3 +1,5 @@
+#include "philo.h"
+
 int	ft_atoi(const char *nptr)
 {
 	int res;
@@ -34,4 +36,14 @@ int	is_numeric(char *c)
 		i++;
 	}
 	return (1);
+}
+
+unsigned long long	get_time(void)
+{
+	struct timeval		stop;
+	unsigned long long	time;
+
+	gettimeofday(&stop, NULL);
+	time = (stop.tv_sec * 1000) + (stop.tv_usec /1000);
+	return (time);
 }

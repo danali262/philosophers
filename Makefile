@@ -2,8 +2,10 @@ NAME = philo
 
 SRC = \
 	main.c \
+	init.c\
 	input.c\
 	threads.c\
+	routine.c\
 	utilities.c
 
 OBJS = $(SRC:.c=.o)
