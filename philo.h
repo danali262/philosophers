@@ -14,13 +14,14 @@ typedef struct s_input
 	unsigned long long				time_to_eat;
 	unsigned long long				time_to_sleep;
 	int								n_times_to_eat;
-	pthread_mutex_t *forks;
+	pthread_mutex_t 				*forks;
 }				t_input;
 
 typedef	enum	e_states
 {
-	PICKED_FORK,
+	WANTS_TO_EAT,
 	EATING,
+	DONE_EATING,
 	SLEEPING,
 	THINKING,
 	DEAD
@@ -35,8 +36,8 @@ typedef struct s_philo
 	int					right_fork;
 	int					dead;
 	int					times_eaten;
+	unsigned long long	start_time;
 	unsigned long long	time_since_last_meal;
-	unsigned long long	timestamp;
 }				t_philo;
 
 unsigned long long	ft_atoi(const char *nptr);
@@ -47,12 +48,12 @@ void				initialize_input(t_input *input);
 int					validate_input(t_input *input, int argc, char **argv);
 int					initialize_philosophers(t_input *input, t_philo *philo);
 int					initialize_mutex(t_philo *philo);
-int					create_threads(t_input *input, t_philo *philosophers);
+int					create_threads(t_input *input, t_philo *philo);
 void				destroy_mutex(t_philo *philo);
-void				picks_forks(t_philo *philosophers);
-void				drops_forks(t_philo *philosophers);
-void				eats(t_philo *philosophers);
-void				sleeps(t_philo *philosophers);
-void				thinks(t_philo *philosophers);
+void				picks_forks(t_philo *philo);
+void				drops_forks(t_philo *philo);
+void				eats(t_philo *philo);
+void				sleeps(t_philo *philo);
+void				thinks(t_philo *philo);
 
 #endif

@@ -2,35 +2,48 @@
 
 void *monitor_routine(void	*arg)
 {
-	t_philo				*philosophers;
+	t_philo				*philo;
 	unsigned long long	timestamp;
 
-	philosophers = arg;
-	timestamp = get_time() - philosophers->time_since_last_meal;
-	if (timestamp > philosophers->input->time_to_die)
-		philosophers->dead = 1;
+	philo = arg;
+	while (philo->dead == 0 && philo->times_eaten != philo->input->n_times_to_eat)
+	{
+		// usleep(500);
+		timestamp = get_time() - philo->time_since_last_meal;
+		if (timestamp > philo->input->time_to_die)
+		{
+			printf("%lld Philosopher %d died.\n", timestamp, philo->index);
+			philo->dead = 1;
+		}
+	}
 	return (0);
 }
 
 void	*routine(void	*arg)
 {
-	t_philo			*philosophers;
+	t_philo			*philo;
 	pthread_t		monitor;
 
-	philosophers = arg;
-	if (pthread_create(&monitor, NULL, &monitor_routine, &philosophers) != 0)
+	philo = arg;
+	if (pthread_create(&monitor, NULL, monitor_routine, philo) != 0)			/* understand this */
 	{
 		printf("Failed to create the threads\n");
 		return (NULL);
 	}
-	while (philosophers->dead == 0 && philosophers->times_eaten != philosophers->input->n_times_to_eat)
+	philo->start_time = get_time();
+	philo->time_since_last_meal = philo->start_time;
+	while (philo->dead == 0 && philo->times_eaten != philo->input->n_times_to_eat)
 	{
-		philosophers->timestamp = get_time();
-		picks_forks(philosophers);
-		eats(philosophers);
-		drops_forks(philosophers);
-		sleeps(philosophers);
-		thinks(philosophers);
+		if (philo->state == WANTS_TO_EAT && philo->dead == 0)
+			picks_forks(philo);
+		if (philo->state == EATING && philo->dead == 0)
+			eats(philo);
+		if (philo->state == DONE_EATING && philo->dead == 0)
+			drops_forks(philo);
+		if (philo->state == SLEEPING && philo->dead == 0)
+			sleeps(philo);
+		if (philo->state == THINKING && philo->dead == 0)
+			thinks(philo);
 	}
 	if (pthread_join(monitor, NULL) != 0)
 	{

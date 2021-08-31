@@ -21,7 +21,7 @@ int	initialize_philosophers(t_input *input, t_philo *philo)
 			return (-1);
 		philo[i].input = input;
 		philo[i].index = i + 1;
-		philo[i].state = THINKING;		/* to be reviewed */
+		philo[i].state = WANTS_TO_EAT;
 		if (i != input->n - 1)
 			philo[i].left_fork = philo[i].index;
 		else
@@ -29,8 +29,8 @@ int	initialize_philosophers(t_input *input, t_philo *philo)
 		philo[i].right_fork = philo[i].index - 1;
 		philo[i].dead = 0;
 		philo[i].times_eaten = 0;
+		philo[i].start_time = 0;
 		philo[i].time_since_last_meal = 0;
-		philo[i].timestamp = 0;
 		i++;
 	}
 	return (0);
