@@ -2,18 +2,19 @@
 
 void	picks_forks(t_philo *philo)
 {
-	// unsigned long long	timestamp;
+	unsigned long long	timestamp;
 
+	timestamp = 0;
 	// philo->timestamp = get_time();
 	pthread_mutex_lock(&philo->input->forks[philo->left_fork]);
 	// timestamp = get_time() - philo->timestamp;
-	// philo->timestamp = timestamp;
-	// printf("%llu Philosopher %d has taken a fork.\n", timestamp, philo->index);
-	printf("Philosopher %d has taken a fork.\n", philo->index);
+	// philo->timestamp = get_time();
+	printf("%llu Philosopher %d has taken a fork.\n", timestamp, philo->index);
+	// usleep(10);
 	// timestamp = get_time() - philo->timestamp;
+	// philo->timestamp = get_time();
 	pthread_mutex_lock(&philo->input->forks[philo->right_fork]);
-	printf("Philosopher %d has taken a fork.\n", philo->index);
-	// printf("%llu Philosopher %d has taken a fork.\n", timestamp, philo->index);
+	printf("%llu Philosopher %d has taken a fork.\n", timestamp, philo->index);
 }
 
 void	eats(t_philo *philo)

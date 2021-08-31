@@ -6,7 +6,7 @@ void	initialize_input(t_input *input)
 	input->time_to_die = 0;
 	input->time_to_eat = 0;
 	input->time_to_sleep = 0;
-	input->n_times_to_eat = 0;
+	input->n_times_to_eat = -1;
 }
 
 int	initialize_philosophers(t_input *input, t_philo *philo)
@@ -16,7 +16,7 @@ int	initialize_philosophers(t_input *input, t_philo *philo)
 	i = 0;
 	while (i < input->n)
 	{
-		philo[i].input = malloc(sizeof(t_input));
+		philo[i].input = ft_calloc(1, sizeof(t_input));
 		if (!philo[i].input)
 			return (-1);
 		philo[i].input = input;
@@ -27,6 +27,9 @@ int	initialize_philosophers(t_input *input, t_philo *philo)
 		else
 			philo[i].left_fork = 0;
 		philo[i].right_fork = philo[i].index - 1;
+		philo[i].dead = 0;
+		philo[i].times_eaten = 0;
+		philo[i].time_since_last_meal = 0;
 		philo[i].timestamp = 0;
 		i++;
 	}
@@ -37,7 +40,7 @@ int	initialize_mutex(t_philo *philo)
 {
 	int	i;
 
-	philo->input->forks = malloc(sizeof(pthread_mutex_t) * philo->input->n);
+	philo->input->forks = ft_calloc(philo->input->n, sizeof(pthread_mutex_t));
 	if (!philo->input->forks)
 		return (-1);
 	i = 0;

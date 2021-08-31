@@ -9,11 +9,11 @@
 
 typedef struct s_input
 {
-	int				n;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-	int				n_times_to_eat;
+	int								n;
+	unsigned long long				time_to_die;
+	unsigned long long				time_to_eat;
+	unsigned long long				time_to_sleep;
+	int								n_times_to_eat;
 	pthread_mutex_t *forks;
 }				t_input;
 
@@ -33,11 +33,15 @@ typedef struct s_philo
 	int					state;
 	int					left_fork;
 	int					right_fork;
+	int					dead;
+	int					times_eaten;
+	unsigned long long	time_since_last_meal;
 	unsigned long long	timestamp;
 }				t_philo;
 
-int					ft_atoi(const char *nptr);
+unsigned long long	ft_atoi(const char *nptr);
 int					is_numeric(char *c);
+void				*ft_calloc(size_t nmemb, size_t size);
 unsigned long long	get_time(void);
 void				initialize_input(t_input *input);
 int					validate_input(t_input *input, int argc, char **argv);

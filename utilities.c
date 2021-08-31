@@ -1,27 +1,18 @@
 #include "philo.h"
 
-int	ft_atoi(const char *nptr)
+unsigned long long	ft_atoi(const char *str)
 {
-	int res;
-	int sign;
+	int 				i;
+	unsigned long long	n;
 
-	res = 0;
-	sign = 1;
-	while (*nptr == ' ' || *nptr == '\t' || *nptr == '\f' || *nptr == '\r' ||
-	*nptr == '\n' || *nptr == '\v')
-		nptr++;
-	if (*nptr == '+' || *nptr == '-')
+	i = 0;
+	n = 0;
+	while (str[i] != '\0')
 	{
-		if (*nptr == '-')
-			sign = -1;
-		nptr++;
+		n = (n * 10) + (str[i] - '0');
+		i++;
 	}
-	while (*nptr >= '0' && *nptr <= '9')
-	{
-		res = res * 10 + (*nptr - 48);
-		nptr++;
-	}
-	return (res * sign);
+	return (n);
 }
 
 int	is_numeric(char *c)
@@ -31,7 +22,7 @@ int	is_numeric(char *c)
 	i = 0;
 	while (c[i] != '\0')
 	{
-		if (c[i] < 48 && c[i] > 57)
+		if (c[i] < 48 || c[i] > 57)
 			return (0);
 		i++;
 	}
@@ -46,4 +37,34 @@ unsigned long long	get_time(void)
 	gettimeofday(&stop, NULL);
 	time = (stop.tv_sec * 1000) + (stop.tv_usec /1000);
 	return (time);
+}
+
+static void	ft_bzero(void *s, size_t n)
+{
+	unsigned char *ptr;
+
+	ptr = NULL;
+	ptr = (unsigned char *)s;
+	while (n > 0)
+	{
+		*ptr = '\0';
+		ptr++;
+		n--;
+	}
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+
+	if (nmemb == 0 || size == 0)
+	{
+		nmemb = 1;
+		size = 1;
+	}
+	ptr = malloc(nmemb * size);
+	if (ptr == NULL)
+		return (ptr);
+	ft_bzero(ptr, nmemb * size);
+	return (ptr);
 }

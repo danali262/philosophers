@@ -1,15 +1,42 @@
 #include "philo.h"
 
+void *monitor_routine(void	*arg)
+{
+	t_philo				*philosophers;
+	unsigned long long	timestamp;
+
+	philosophers = arg;
+	timestamp = get_time() - philosophers->time_since_last_meal;
+	if (timestamp > philosophers->input->time_to_die)
+		philosophers->dead = 1;
+	return (0);
+}
+
 void	*routine(void	*arg)
 {
 	t_philo			*philosophers;
+	pthread_t		monitor;
 
 	philosophers = arg;
-	picks_forks(philosophers);
-	eats(philosophers);
-	drops_forks(philosophers);
-	sleeps(philosophers);
-	thinks(philosophers);
+	if (pthread_create(&monitor, NULL, &monitor_routine, &philosophers) != 0)
+	{
+		printf("Failed to create the threads\n");
+		return (NULL);
+	}
+	while (philosophers->dead == 0 && philosophers->times_eaten != philosophers->input->n_times_to_eat)
+	{
+		philosophers->timestamp = get_time();
+		picks_forks(philosophers);
+		eats(philosophers);
+		drops_forks(philosophers);
+		sleeps(philosophers);
+		thinks(philosophers);
+	}
+	if (pthread_join(monitor, NULL) != 0)
+	{
+		printf("Failed to join the threads\n");
+		return (NULL);
+	}
 	return (0);
 }
 
