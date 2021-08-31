@@ -6,6 +6,7 @@ SRC = \
 	input.c\
 	threads.c\
 	routine.c\
+	prints.c\
 	utilities.c
 
 OBJS = $(SRC:.c=.o)

@@ -7,6 +7,7 @@ void	initialize_input(t_input *input)
 	input->time_to_eat = 0;
 	input->time_to_sleep = 0;
 	input->n_times_to_eat = -1;
+	input->dead_flag = 0;
 }
 
 int	initialize_philosophers(t_input *input, t_philo *philo)
@@ -27,7 +28,6 @@ int	initialize_philosophers(t_input *input, t_philo *philo)
 		else
 			philo[i].left_fork = 0;
 		philo[i].right_fork = philo[i].index - 1;
-		philo[i].dead = 0;
 		philo[i].times_eaten = 0;
 		philo[i].start_time = 0;
 		philo[i].time_since_last_meal = 0;
@@ -49,6 +49,8 @@ int	initialize_mutex(t_philo *philo)
 		pthread_mutex_init(&philo->input->forks[i], NULL);
 		i++;
 	}
+	pthread_mutex_init(&philo->input->print, NULL);
+	pthread_mutex_init(&philo->input->dead_philo, NULL);
 	return (0);
 }
 
@@ -62,4 +64,6 @@ void	destroy_mutex(t_philo *philo)
 		pthread_mutex_destroy(&philo->input->forks[i]);
 		i++;
 	}
+	pthread_mutex_destroy(&philo->input->print);
+	pthread_mutex_destroy(&philo->input->dead_philo);
 }

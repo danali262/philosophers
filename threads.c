@@ -4,17 +4,20 @@ void *monitor_routine(void	*arg)
 {
 	t_philo				*philo;
 	unsigned long long	timestamp;
+	unsigned long long	difference;
 
 	philo = arg;
-	while (philo->dead == 0 && philo->times_eaten != philo->input->n_times_to_eat)
+	while (philo->input->dead_flag == 0 && philo->times_eaten != philo->input->n_times_to_eat)
 	{
-		// usleep(500);
-		timestamp = get_time() - philo->time_since_last_meal;
-		if (timestamp > philo->input->time_to_die)
+		pthread_mutex_lock(&philo->input->dead_philo);
+		difference = get_time() - philo->time_since_last_meal;
+		timestamp = get_time() - philo->start_time;
+		if (difference > philo->input->time_to_die && philo->input->dead_flag == 0)
 		{
-			printf("%lld Philosopher %d died.\n", timestamp, philo->index);
-			philo->dead = 1;
+			print_message(timestamp, philo, DIED);
+			philo->input->dead_flag = 1;
 		}
+		pthread_mutex_unlock(&philo->input->dead_philo);
 	}
 	return (0);
 }
@@ -32,17 +35,17 @@ void	*routine(void	*arg)
 	}
 	philo->start_time = get_time();
 	philo->time_since_last_meal = philo->start_time;
-	while (philo->dead == 0 && philo->times_eaten != philo->input->n_times_to_eat)
+	while (philo->input->dead_flag == 0 && philo->times_eaten != philo->input->n_times_to_eat)
 	{
-		if (philo->state == WANTS_TO_EAT && philo->dead == 0)
+		if (philo->state == WANTS_TO_EAT && philo->input->dead_flag == 0)
 			picks_forks(philo);
-		if (philo->state == EATING && philo->dead == 0)
+		if (philo->state == EATS && philo->input->dead_flag == 0)
 			eats(philo);
-		if (philo->state == DONE_EATING && philo->dead == 0)
+		if (philo->state == DONE_EATING && philo->input->dead_flag == 0)
 			drops_forks(philo);
-		if (philo->state == SLEEPING && philo->dead == 0)
+		if (philo->state == SLEEPS && philo->input->dead_flag == 0)
 			sleeps(philo);
-		if (philo->state == THINKING && philo->dead == 0)
+		if (philo->state == THINKS && philo->input->dead_flag == 0)
 			thinks(philo);
 	}
 	if (pthread_join(monitor, NULL) != 0)
