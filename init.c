@@ -8,15 +8,19 @@ void	initialize_input(t_input *input)
 	input->time_to_sleep = 0;
 	input->n_times_to_eat = -1;
 	input->dead_flag = 0;
+	input->print_debug = 0;
+	input->dead_philo_debug = 0;
 }
 
 int	initialize_philosophers(t_input *input, t_philo *philo)
 {
 	int	i;
 
+	input->forks_debug = malloc(sizeof(int) * input->n);
 	i = 0;
 	while (i < input->n)
 	{
+		input->forks_debug[i] = 0;
 		philo[i].input = ft_calloc(1, sizeof(t_input));
 		if (!philo[i].input)
 			return (-1);

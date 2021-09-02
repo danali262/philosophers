@@ -18,6 +18,9 @@ typedef struct s_input
 	pthread_mutex_t 				*forks;
 	pthread_mutex_t					print;
 	pthread_mutex_t					dead_philo;
+	int								*forks_debug;
+	int								print_debug;
+	int								dead_philo_debug;
 }				t_input;
 
 typedef	enum	e_states
@@ -69,5 +72,6 @@ void				sleeps(t_philo *philo);
 void				thinks(t_philo *philo);
 
 void				print_message(unsigned long long timestamp, t_philo *philo, int option);
+void				print_taken_fork(unsigned long long timestamp, t_philo *philo, int no_fork);
 
 #endif

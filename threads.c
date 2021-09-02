@@ -7,9 +7,12 @@ void *monitor_routine(void	*arg)
 	unsigned long long	difference;
 
 	philo = arg;
+	// usleep(100);					/* review this */
 	while (philo->input->dead_flag == 0 && philo->times_eaten != philo->input->n_times_to_eat)
 	{
+		// usleep(500);
 		pthread_mutex_lock(&philo->input->dead_philo);
+		philo->input->dead_philo_debug = 1;
 		difference = get_time() - philo->time_since_last_meal;
 		timestamp = get_time() - philo->start_time;
 		if (difference > philo->input->time_to_die && philo->input->dead_flag == 0)
@@ -18,6 +21,7 @@ void *monitor_routine(void	*arg)
 			philo->input->dead_flag = 1;
 		}
 		pthread_mutex_unlock(&philo->input->dead_philo);
+		philo->input->dead_philo_debug = 0;
 	}
 	return (0);
 }
@@ -33,6 +37,7 @@ void	*routine(void	*arg)
 		printf("Failed to create the threads\n");
 		return (NULL);
 	}
+	// usleep(100);			/* review this */				
 	philo->start_time = get_time();
 	philo->time_since_last_meal = philo->start_time;
 	while (philo->input->dead_flag == 0 && philo->times_eaten != philo->input->n_times_to_eat)
@@ -47,6 +52,20 @@ void	*routine(void	*arg)
 			sleeps(philo);
 		if (philo->state == THINKS && philo->input->dead_flag == 0)
 			thinks(philo);
+	}
+	int i;
+	if (philo->input->dead_flag == 1)
+	{
+		i = 0;
+		while (i < philo->input->n)
+		{
+			if (philo->input->forks_debug[i] == 1)
+			{
+				pthread_mutex_unlock(&philo->input->forks[i]);
+				philo->input->forks_debug[i] = 0;
+			}
+			i++;
+		}
 	}
 	if (pthread_join(monitor, NULL) != 0)
 	{
@@ -75,6 +94,8 @@ int	create_threads(t_input *input, t_philo *philo)
 		}
 		i++;
 	}
+	if (philo->input->dead_flag == 1)
+		return (0);
 	i = 0;
 	while (i < input->n)
 	{
