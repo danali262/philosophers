@@ -1,5 +1,21 @@
 #include "philo.h"
 
+void	unlock_forks(t_philo *philo)
+{
+	int i;
+
+	i = 0;
+	while (i < philo->input->n)
+	{
+		if (philo->input->forks_debug[i] == 1)
+		{
+			pthread_mutex_unlock(&philo->input->forks[i]);
+			philo->input->forks_debug[i] = 0;
+		}
+		i++;
+	}
+}
+
 void *monitor_routine(void	*arg)
 {
 	t_philo				*philo;
@@ -7,21 +23,21 @@ void *monitor_routine(void	*arg)
 	unsigned long long	difference;
 
 	philo = arg;
-	// usleep(100);					/* review this */
 	while (philo->input->dead_flag == 0 && philo->times_eaten != philo->input->n_times_to_eat)
 	{
 		// usleep(500);
 		pthread_mutex_lock(&philo->input->dead_philo);
-		philo->input->dead_philo_debug = 1;
 		difference = get_time() - philo->time_since_last_meal;
 		timestamp = get_time() - philo->start_time;
-		if (difference > philo->input->time_to_die && philo->input->dead_flag == 0)
+		if (difference > philo->input->time_to_die)
+		// if (difference > philo->input->time_to_die && philo->input->dead_flag == 0)
 		{
-			print_message(timestamp, philo, DIED);
+			print_died(timestamp, philo);
 			philo->input->dead_flag = 1;
+			philo->state = DIED;
+			// return (0);
 		}
 		pthread_mutex_unlock(&philo->input->dead_philo);
-		philo->input->dead_philo_debug = 0;
 	}
 	return (0);
 }
@@ -32,40 +48,24 @@ void	*routine(void	*arg)
 	pthread_t		monitor;
 
 	philo = arg;
-	if (pthread_create(&monitor, NULL, monitor_routine, philo) != 0)			/* understand this */
+	if (pthread_create(&monitor, NULL, &monitor_routine, philo) != 0)			/* understand this */
 	{
 		printf("Failed to create the threads\n");
 		return (NULL);
 	}
-	// usleep(100);			/* review this */				
 	philo->start_time = get_time();
 	philo->time_since_last_meal = philo->start_time;
 	while (philo->input->dead_flag == 0 && philo->times_eaten != philo->input->n_times_to_eat)
 	{
+		usleep(500);
 		if (philo->state == WANTS_TO_EAT && philo->input->dead_flag == 0)
 			picks_forks(philo);
-		if (philo->state == EATS && philo->input->dead_flag == 0)
+		if (philo->state == EATING && philo->input->dead_flag == 0)
 			eats(philo);
-		if (philo->state == DONE_EATING && philo->input->dead_flag == 0)
-			drops_forks(philo);
-		if (philo->state == SLEEPS && philo->input->dead_flag == 0)
+		if (philo->state == SLEEPING && philo->input->dead_flag == 0)
 			sleeps(philo);
-		if (philo->state == THINKS && philo->input->dead_flag == 0)
+		if (philo->state == THINKING && philo->input->dead_flag == 0)
 			thinks(philo);
-	}
-	int i;
-	if (philo->input->dead_flag == 1)
-	{
-		i = 0;
-		while (i < philo->input->n)
-		{
-			if (philo->input->forks_debug[i] == 1)
-			{
-				pthread_mutex_unlock(&philo->input->forks[i]);
-				philo->input->forks_debug[i] = 0;
-			}
-			i++;
-		}
 	}
 	if (pthread_join(monitor, NULL) != 0)
 	{
@@ -80,7 +80,7 @@ int	create_threads(t_input *input, t_philo *philo)
 	pthread_t	*philo_group;
 	int			i;
 
-	philo_group = malloc(sizeof(pthread_t) * input->n);
+	philo_group = ft_calloc(input->n, sizeof(pthread_t));
 	if (!philo_group)
 		return (-1);
 	i = 0;
@@ -94,8 +94,6 @@ int	create_threads(t_input *input, t_philo *philo)
 		}
 		i++;
 	}
-	if (philo->input->dead_flag == 1)
-		return (0);
 	i = 0;
 	while (i < input->n)
 	{
