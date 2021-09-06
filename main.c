@@ -45,6 +45,6 @@ int	main(int argc, char **argv)
 	destroy_mutex(&input);
 	free(philo);
 	free(input.forks);
-	// free(input.forks_status);
+	free(input.forks_status);
 	return (0);
 }

@@ -14,7 +14,7 @@ void	unlock_forks(t_input *input)
 		}
 		i++;
 	}
-	free(input->forks_status);
+	// free(input->forks_status);
 }
 
 void *monitor_routine(void	*arg)
