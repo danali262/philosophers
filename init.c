@@ -6,7 +6,7 @@
 /*   By: danali <danali@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/06 15:24:40 by danali        #+#    #+#                 */
-/*   Updated: 2021/09/06 15:40:01 by danali        ########   odam.nl         */
+/*   Updated: 2021/09/06 16:16:15 by danali        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	initialize_philosophers(t_input *input, t_philo *philo)
 	}
 }
 
-static void	mutex_loop(t_input *input)
+static int	mutex_loop(t_input *input)
 {
 	int	i;
 
@@ -61,6 +61,7 @@ static void	mutex_loop(t_input *input)
 		}
 		i++;
 	}
+	return (0);
 }
 
 int	initialize_mutex(t_input *input)
@@ -71,7 +72,8 @@ int	initialize_mutex(t_input *input)
 	input->forks_status = ft_calloc(input->n, sizeof(int));
 	if (!input->forks_status)
 		return (-1);
-	mutex_loop(input);
+	if (mutex_loop(input) == -1)
+		return (-1);
 	if (pthread_mutex_init(&input->print, NULL)
 		|| pthread_mutex_init(&input->dead_philo, NULL))
 	{

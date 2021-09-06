@@ -6,7 +6,7 @@
 /*   By: danali <danali@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/06 15:44:03 by danali        #+#    #+#                 */
-/*   Updated: 2021/09/06 16:11:50 by danali        ########   odam.nl         */
+/*   Updated: 2021/09/06 16:25:31 by danali        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,9 @@ void				sleeps(t_philo *philo);
 void				thinks(t_philo *philo);
 void				unlock_forks(t_input *input);
 
-static void			picks_forks_odd(t_philo *philo);
-static void			picks_forks_even(t_philo *philo);
-static void			regulated_usleep(unsigned long long time_to_sleep);
+void				picks_forks_odd(t_philo *philo);
+void				picks_forks_even(t_philo *philo);
+void				regulated_usleep(unsigned long long time_to_sleep);
 
 void				print_message(t_philo *philo, int option);
 void				print_died(t_philo *philo);

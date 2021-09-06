@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   routine_aux.c                                      :+:    :+:            */
+/*   actions_aux.c                                      :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: danali <danali@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/06 16:00:05 by danali        #+#    #+#                 */
-/*   Updated: 2021/09/06 16:01:35 by danali        ########   odam.nl         */
+/*   Updated: 2021/09/06 16:15:23 by danali        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	picks_forks_odd(t_philo *philo)
+void	picks_forks_odd(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->input->forks[philo->right_fork]);
 	if (philo->input->dead_flag == 0)
@@ -28,7 +28,7 @@ static void	picks_forks_odd(t_philo *philo)
 	}
 }
 
-static void	picks_forks_even(t_philo *philo)
+void	picks_forks_even(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->input->forks[philo->left_fork]);
 	if (philo->input->dead_flag == 0)
@@ -44,7 +44,7 @@ static void	picks_forks_even(t_philo *philo)
 	}
 }
 
-static void	regulated_usleep(unsigned long long time_to_sleep)
+void	regulated_usleep(unsigned long long time_to_sleep)
 {
 	unsigned long long	start;
 

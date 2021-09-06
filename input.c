@@ -6,7 +6,7 @@
 /*   By: danali <danali@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/06 15:27:09 by danali        #+#    #+#                 */
-/*   Updated: 2021/09/06 15:43:15 by danali        ########   odam.nl         */
+/*   Updated: 2021/09/06 16:20:20 by danali        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,19 @@
 
 int	parser(int argc, char **argv, t_input *input)
 {
-	if (argc < 5)
+	if (argc < 5 || argc > 6)
 	{
-		printf("Please provide sufficient arguments\n");
+		printf("Please provide a correct number of arguments\n");
 		return (-1);
 	}
-	initialize_input(&input);
+	initialize_input(input);
 	input->n = ft_atoi(argv[1]);
 	input->time_to_die = ft_atoi(argv[2]);
 	input->time_to_eat = ft_atoi(argv[3]);
 	input->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
 		input->n_times_to_eat = ft_atoi(argv[5]);
+	return (0);
 }
 
 static int	error_messages(int option)
