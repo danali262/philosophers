@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   init.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: danali <danali@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/09/06 15:24:40 by danali        #+#    #+#                 */
+/*   Updated: 2021/09/06 15:40:01 by danali        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 void	initialize_input(t_input *input)
@@ -10,7 +22,7 @@ void	initialize_input(t_input *input)
 	input->dead_flag = 0;
 }
 
-int	initialize_philosophers(t_input *input, t_philo *philo)
+void	initialize_philosophers(t_input *input, t_philo *philo)
 {
 	int	i;
 
@@ -32,19 +44,12 @@ int	initialize_philosophers(t_input *input, t_philo *philo)
 		philo[i].time_since_last_meal = 0;
 		i++;
 	}
-	return (0);
 }
 
-int	initialize_mutex(t_input *input)
+static void	mutex_loop(t_input *input)
 {
 	int	i;
 
-	input->forks = ft_calloc(input->n, sizeof(pthread_mutex_t));
-	if (!input->forks)
-		return (-1);
-	input->forks_status = ft_calloc(input->n, sizeof(int));
-	if (!input->forks_status)
-		return (-1);
 	i = 0;
 	while (i < input->n)
 	{
@@ -56,7 +61,19 @@ int	initialize_mutex(t_input *input)
 		}
 		i++;
 	}
-	if (pthread_mutex_init(&input->print, NULL) || pthread_mutex_init(&input->dead_philo, NULL))
+}
+
+int	initialize_mutex(t_input *input)
+{
+	input->forks = ft_calloc(input->n, sizeof(pthread_mutex_t));
+	if (!input->forks)
+		return (-1);
+	input->forks_status = ft_calloc(input->n, sizeof(int));
+	if (!input->forks_status)
+		return (-1);
+	mutex_loop(input);
+	if (pthread_mutex_init(&input->print, NULL)
+		|| pthread_mutex_init(&input->dead_philo, NULL))
 	{
 		free(input->forks);
 		return (-1);

@@ -1,74 +1,87 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   routine.c                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: danali <danali@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/09/06 16:09:37 by danali        #+#    #+#                 */
+/*   Updated: 2021/09/06 16:12:23 by danali        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void	picks_forks(t_philo *philo)
+void	unlock_forks(t_input *input)
 {
-	if (philo->index % 2 == 1)
+	int	i;
+
+	i = 0;
+	while (i < input->n)
 	{
-		pthread_mutex_lock(&philo->input->forks[philo->right_fork]);
-		if (philo->input->dead_flag == 0)
+		if (input->forks_status[i] == 1)
 		{
-			philo->input->forks_status[philo->right_fork] = 1;
-			print_message(philo, TAKEN_FORK);
+			pthread_mutex_unlock(&input->forks[i]);
+			input->forks_status[i] = 0;
 		}
-		pthread_mutex_lock(&philo->input->forks[philo->left_fork]);
-		if (philo->input->dead_flag == 0)
-		{
-			philo->input->forks_status[philo->left_fork] = 1;
-			print_message(philo, TAKEN_FORK);
-		}
+		i++;
 	}
-	else
+}
+
+static void	*monitor_routine(void	*arg)
+{
+	t_philo				*philo;
+	unsigned long long	difference;
+
+	philo = arg;
+	while (philo->input->dead_flag == 0 && philo->times_eaten
+		!= philo->input->n_times_to_eat)
 	{
-		pthread_mutex_lock(&philo->input->forks[philo->left_fork]);
-		if (philo->input->dead_flag == 0)
+		usleep(500);
+		pthread_mutex_lock(&philo->input->dead_philo);
+		difference = get_time() - philo->time_since_last_meal;
+		if (difference > philo->input->time_to_die)
 		{
-			philo->input->forks_status[philo->left_fork] = 1;
-			print_message(philo, TAKEN_FORK);
+			print_died(philo);
+			unlock_forks(philo->input);
 		}
-		pthread_mutex_lock(&philo->input->forks[philo->right_fork]);
-		if (philo->input->dead_flag == 0)
-		{
-			philo->input->forks_status[philo->right_fork] = 1;
-			print_message(philo, TAKEN_FORK);
-		}
+		pthread_mutex_unlock(&philo->input->dead_philo);
 	}
-	philo->state = EATING;
+	return (0);
 }
 
-static void	ft_sleep(unsigned long long time_to_sleep)
+static void	routine_loop(t_philo *philo)
 {
-	unsigned long long	start;
-
-	start = get_time() * 1000;
-	while (get_time() * 1000 - start < time_to_sleep)
-		usleep(100);
+	if (philo->state == THINKING && philo->input->dead_flag == 0)
+		picks_forks(philo);
+	if (philo->state == EATING && philo->input->dead_flag == 0)
+		eats(philo);
+	if (philo->state == SLEEPING && philo->input->dead_flag == 0)
+		sleeps(philo);
+	if (philo->state == THINKING && philo->input->dead_flag == 0)
+		thinks(philo);
 }
 
-void	eats(t_philo *philo)
+void	*routine(void	*arg)
 {
-	pthread_mutex_lock(&philo->input->dead_philo);
-	philo->time_since_last_meal = get_time();
-	print_message(philo, EATING);
-	pthread_mutex_unlock(&philo->input->dead_philo);
-	ft_sleep(philo->input->time_to_eat * 1000);
-	philo->times_eaten++;
-	pthread_mutex_unlock(&philo->input->forks[philo->left_fork]);
-	if (philo->input->dead_flag == 0)
-		philo->input->forks_status[philo->left_fork] = 0;
-	pthread_mutex_unlock(&philo->input->forks[philo->right_fork]);
-	if (philo->input->dead_flag == 0)
-		philo->input->forks_status[philo->left_fork] = 0;
-	philo->state = SLEEPING;
-}
+	t_philo			*philo;
+	pthread_t		monitor;
 
-void	sleeps(t_philo *philo)
-{
-	print_message(philo, SLEEPING);
-	ft_sleep(philo->input->time_to_sleep * 1000);
-	philo->state = THINKING;
-}
-
-void	thinks(t_philo *philo)
-{
-	print_message(philo, THINKING);
+	philo = arg;
+	if (pthread_create(&monitor, NULL, monitor_routine, philo) != 0)
+	{
+		printf("Failed to create the threads\n");
+		return (NULL);
+	}
+	philo->start_time = get_time();
+	philo->time_since_last_meal = philo->start_time;
+	while (philo->input->dead_flag == 0 && philo->times_eaten
+		!= philo->input->n_times_to_eat)
+		routine_loop(philo);
+	if (pthread_join(monitor, NULL) != 0)
+	{
+		printf("Failed to join the threads\n");
+		return (NULL);
+	}
+	return (0);
 }

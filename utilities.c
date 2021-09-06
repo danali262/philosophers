@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   utilities.c                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: danali <danali@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/09/06 16:12:47 by danali        #+#    #+#                 */
+/*   Updated: 2021/09/06 16:14:10 by danali        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 unsigned long long	ft_atoi(const char *str)
 {
-	int 				i;
+	int					i;
 	unsigned long long	n;
 
 	i = 0;
@@ -17,7 +29,7 @@ unsigned long long	ft_atoi(const char *str)
 
 int	is_numeric(char *c)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (c[i] != '\0')
@@ -35,13 +47,13 @@ unsigned long long	get_time(void)
 	unsigned long long	time;
 
 	gettimeofday(&stop, NULL);
-	time = (stop.tv_sec * 1000) + (stop.tv_usec /1000);
+	time = (stop.tv_sec * 1000) + (stop.tv_usec / 1000);
 	return (time);
 }
 
 static void	ft_bzero(void *s, size_t n)
 {
-	unsigned char *ptr;
+	unsigned char	*ptr;
 
 	ptr = NULL;
 	ptr = (unsigned char *)s;

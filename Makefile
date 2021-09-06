@@ -6,12 +6,13 @@ SRC = \
 	input.c\
 	threads.c\
 	routine.c\
+	actions.c\
+	actions_aux.c\
 	prints.c\
 	utilities.c
 
 OBJS = $(SRC:.c=.o)
 CFLAGS = -Wall -Werror -Wextra -O0 -g 
-# CFLAGS = -Wall -Werror -Wextra -O0 -g -fsanitize=address 
 
 CC = gcc
 
