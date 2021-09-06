@@ -14,60 +14,66 @@ int	initialize_philosophers(t_input *input, t_philo *philo)
 {
 	int	i;
 
-	input->forks_debug = ft_calloc(input->n, sizeof(int));
-	if (!input->forks_debug)
-		return (-1);
 	i = 0;
 	while (i < input->n)
 	{
-		input->forks_debug[i] = 0;
-		philo[i].input = ft_calloc(1, sizeof(t_input));
-		if (!philo[i].input)
-			return (-1);
+		input->forks_status[i] = 0;
 		philo[i].input = input;
 		philo[i].index = i + 1;
-		philo[i].state = WANTS_TO_EAT;
 		if (i != input->n - 1)
 			philo[i].left_fork = philo[i].index;
 		else
 			philo[i].left_fork = 0;
 		philo[i].right_fork = philo[i].index - 1;
 		philo[i].times_eaten = 0;
+		philo[i].state = THINKING;
 		philo[i].start_time = 0;
+		philo[i].timestamp = 0;
 		philo[i].time_since_last_meal = 0;
 		i++;
 	}
 	return (0);
 }
 
-int	initialize_mutex(t_philo *philo)
+int	initialize_mutex(t_input *input)
 {
 	int	i;
 
-	philo->input->forks = ft_calloc(philo->input->n, sizeof(pthread_mutex_t));
-	if (!philo->input->forks)
+	input->forks = ft_calloc(input->n, sizeof(pthread_mutex_t));
+	if (!input->forks)
+		return (-1);
+	input->forks_status = ft_calloc(input->n, sizeof(int));
+	if (!input->forks_status)
 		return (-1);
 	i = 0;
-	while (i < philo->input->n)
+	while (i < input->n)
 	{
-		pthread_mutex_init(&philo->input->forks[i], NULL);
+		input->forks_status[i] = 0;
+		if (pthread_mutex_init(&input->forks[i], NULL))
+		{
+			free(input->forks);
+			return (-1);
+		}
 		i++;
 	}
-	pthread_mutex_init(&philo->input->print, NULL);
-	pthread_mutex_init(&philo->input->dead_philo, NULL);
+	if (pthread_mutex_init(&input->print, NULL) || pthread_mutex_init(&input->dead_philo, NULL))
+	{
+		free(input->forks);
+		return (-1);
+	}
 	return (0);
 }
 
-void	destroy_mutex(t_philo *philo)
+void	destroy_mutex(t_input *input)
 {
 	int	i;
 
 	i = 0;
-	while (i < philo->input->n)
+	while (i < input->n)
 	{
-		pthread_mutex_destroy(&philo->input->forks[i]);
+		pthread_mutex_destroy(&input->forks[i]);
 		i++;
 	}
-	pthread_mutex_destroy(&philo->input->print);
-	pthread_mutex_destroy(&philo->input->dead_philo);
+	pthread_mutex_destroy(&input->print);
+	pthread_mutex_destroy(&input->dead_philo);
 }

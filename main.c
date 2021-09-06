@@ -19,16 +19,32 @@ int	main(int argc, char **argv)
 		input.n_times_to_eat = ft_atoi(argv[5]);
 	if (validate_input(&input, argc, argv) == -1)
 		return (-1);
+	if (initialize_mutex(&input) == -1)
+		return (-1);
 	philo = ft_calloc(input.n, sizeof(t_philo));
 	if (!philo)
+	{
+		free(input.forks);
+		free(input.forks_status);
 		return (-1);
+	}
 	if (initialize_philosophers(&input, philo) == -1)
+	{
+		free(input.forks);
+		free(input.forks_status);
+		free(philo);
 		return (-1);
-	if (initialize_mutex(philo) == -1)
-		return (-1);
+	}
 	if (create_threads(&input, philo) == -1)
-		return (1);
-	destroy_mutex(philo);
+	{
+		free(input.forks);
+		free(input.forks_status);
+		free(philo);
+		return (-1);
+	}
+	destroy_mutex(&input);
 	free(philo);
+	free(input.forks);
+	// free(input.forks_status);
 	return (0);
 }

@@ -1,41 +1,37 @@
 #include "philo.h"
 
-void	unlock_forks(t_philo *philo)
+void	unlock_forks(t_input *input)
 {
 	int i;
 
 	i = 0;
-	while (i < philo->input->n)
+	while (i < input->n)
 	{
-		if (philo->input->forks_debug[i] == 1)
+		if (input->forks_status[i] == 1)
 		{
-			pthread_mutex_unlock(&philo->input->forks[i]);
-			philo->input->forks_debug[i] = 0;
+			pthread_mutex_unlock(&input->forks[i]);
+			input->forks_status[i] = 0;
 		}
 		i++;
 	}
+	free(input->forks_status);
 }
 
 void *monitor_routine(void	*arg)
 {
 	t_philo				*philo;
-	unsigned long long	timestamp;
 	unsigned long long	difference;
 
 	philo = arg;
 	while (philo->input->dead_flag == 0 && philo->times_eaten != philo->input->n_times_to_eat)
 	{
-		// usleep(500);
+		usleep(500);
 		pthread_mutex_lock(&philo->input->dead_philo);
 		difference = get_time() - philo->time_since_last_meal;
-		timestamp = get_time() - philo->start_time;
 		if (difference > philo->input->time_to_die)
-		// if (difference > philo->input->time_to_die && philo->input->dead_flag == 0)
 		{
-			print_died(timestamp, philo);
-			philo->input->dead_flag = 1;
-			philo->state = DIED;
-			// return (0);
+			print_died(philo);
+			unlock_forks(philo->input);
 		}
 		pthread_mutex_unlock(&philo->input->dead_philo);
 	}
@@ -48,7 +44,7 @@ void	*routine(void	*arg)
 	pthread_t		monitor;
 
 	philo = arg;
-	if (pthread_create(&monitor, NULL, &monitor_routine, philo) != 0)			/* understand this */
+	if (pthread_create(&monitor, NULL, monitor_routine, philo) != 0)
 	{
 		printf("Failed to create the threads\n");
 		return (NULL);
@@ -57,8 +53,7 @@ void	*routine(void	*arg)
 	philo->time_since_last_meal = philo->start_time;
 	while (philo->input->dead_flag == 0 && philo->times_eaten != philo->input->n_times_to_eat)
 	{
-		usleep(500);
-		if (philo->state == WANTS_TO_EAT && philo->input->dead_flag == 0)
+		if (philo->state == THINKING && philo->input->dead_flag == 0)
 			picks_forks(philo);
 		if (philo->state == EATING && philo->input->dead_flag == 0)
 			eats(philo);
@@ -87,8 +82,9 @@ int	create_threads(t_input *input, t_philo *philo)
 	while (i < input->n)
 	{
 		philo[i].index = i + 1;
-		if (pthread_create(&philo_group[i], NULL, &routine, &philo[i]) != 0)
+		if (pthread_create(&philo_group[i], NULL, routine, &philo[i]) != 0)
 		{
+			free(philo_group);
 			printf("Failed to create the threads\n");
 			return (-1);
 		}
@@ -99,6 +95,7 @@ int	create_threads(t_input *input, t_philo *philo)
 	{
 		if (pthread_join(philo_group[i], NULL) != 0)
 		{
+			free(philo_group);
 			printf("Failed to join the threads\n");
 			return (-1);
 		}

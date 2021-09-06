@@ -1,38 +1,32 @@
 #include "philo.h"
 
-void	print_message(unsigned long long timestamp, t_philo *philo, int option)
+void	print_message(t_philo *philo, int option)
 {
 	pthread_mutex_lock(&philo->input->print);
-	philo->input->print_debug = 1;
-	// if (option == TAKEN_FORK)
-	// 	printf("%lld Philosopher %d has taken a fork.\n", timestamp, philo->index);
+	if (philo->input->dead_flag == 1 || philo->times_eaten == philo->input->n_times_to_eat)
+	{
+		pthread_mutex_unlock(&philo->input->print);
+		return ;
+	}
+	philo->timestamp = get_time() - philo->start_time;
+	if (option == TAKEN_FORK)
+		printf("%lld Philosopher %d has taken a fork.\n", philo->timestamp, philo->index);
 	if (option == EATING)
-		printf("%lld Philosopher %d is eating.\n", timestamp, philo->index);
+		printf("%lld Philosopher %d is eating.\n", philo->timestamp, philo->index);
 	if (option == SLEEPING)
-		printf("%lld Philosopher %d is sleeping.\n", timestamp, philo->index);
+		printf("%lld Philosopher %d is sleeping.\n", philo->timestamp, philo->index);
 	if (option == THINKING)
-		printf("%lld Philosopher %d is thinking.\n", timestamp, philo->index);
-	// if (option == DIED)
-	// 	printf("%lld Philosopher %d died.\n", timestamp, philo->index);
+		printf("%lld Philosopher %d is thinking.\n", philo->timestamp, philo->index);
 	pthread_mutex_unlock(&philo->input->print);
-	philo->input->print_debug = 0;
 }
 
-void	print_taken_fork(unsigned long long timestamp, t_philo *philo, int no_fork)
+void	print_died(t_philo *philo)
 {
-	pthread_mutex_unlock(&philo->input->forks[no_fork]);
+	if (philo->input->dead_flag == 1)
+		return ;
+	philo->input->dead_flag = 1;
 	pthread_mutex_lock(&philo->input->print);
-	printf("%lld Philosopher %d has taken fork %d.\n", timestamp, philo->index, no_fork);
+	philo->timestamp = get_time() - philo->start_time;
+	printf("%lld Philosopher %d died.\n", philo->timestamp, philo->index);
 	pthread_mutex_unlock(&philo->input->print);
-	pthread_mutex_lock(&philo->input->forks[no_fork]);
-}
-
-void	print_died(unsigned long long timestamp, t_philo *philo)
-{
-	unlock_forks(philo);
-	pthread_mutex_unlock(&philo->input->dead_philo);
-	pthread_mutex_lock(&philo->input->print);
-	printf("%lld Philosopher %d died.\n", timestamp, philo->index);
-	pthread_mutex_unlock(&philo->input->print);
-	pthread_mutex_lock(&philo->input->dead_philo);
 }
